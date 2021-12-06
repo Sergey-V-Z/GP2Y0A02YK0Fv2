@@ -1,0 +1,20 @@
+Added Pin To Net: NetName=B Pin=R13-1
+Added Pin To Net: NetName=B Pin=U2-4
+Added Net: Name=B
+Added Pin To Net: NetName=G Pin=R11-1
+Added Pin To Net: NetName=G Pin=U2-3
+Added Net: Name=G
+Added Pin To Net: NetName=R Pin=R10-1
+Added Pin To Net: NetName=R Pin=U2-2
+Added Net: Name=R
+Added Member To Class: ClassName=universal driver v2 Member=Component C5 0.1uF
+Added Member To Class: ClassName=universal driver v2 Member=Component C6 20pF
+Added Member To Class: ClassName=universal driver v2 Member=Component C7 20pF
+Added Member To Class: ClassName=universal driver v2 Member=Component C8 0.1uF
+Added Member To Class: ClassName=universal driver v2 Member=Component C9 0.1uF
+Added Member To Class: ClassName=universal driver v2 Member=Component D3 150141M173100
+Added Member To Class: ClassName=universal driver v2 Member=Component R3 10
+Added Member To Class: ClassName=universal driver v2 Member=Component R4 10K
+Added Member To Class: ClassName=universal driver v2 Member=Component R9 10
+Added Member To Class: ClassName=universal driver v2 Member=Component R10 3.9k
+Added Member To Class: ClassName=universal driver v2 Member=Component R11 3.9k
