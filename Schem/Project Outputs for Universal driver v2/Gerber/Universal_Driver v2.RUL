@@ -1,4 +1,4 @@
-DRC Rules Export File for PCB: D:\Radio\Jobe\GP2Y0A02YK0F\Schem\Universal_Driver v2.PcbDoc
+DRC Rules Export File for PCB: D:\Kicads Schem\GP2Y0A02YK0Fv2\Schem\Universal_Driver v2.PcbDoc
 RuleKind=Clearance|RuleName=Clearance_1|Scope=Board|Minimum=39.37
 RuleKind=SolderMaskExpansion|RuleName=SolderMaskExpansion|Scope=Board|Minimum=4.00
 RuleKind=Width|RuleName=Width|Scope=Board|Minimum=10.00
