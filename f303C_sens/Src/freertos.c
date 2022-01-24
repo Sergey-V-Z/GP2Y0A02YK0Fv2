@@ -25,7 +25,7 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 #include "mb.h"
 #include "mbport.h"
 #include "flash_user.h"
@@ -59,7 +59,7 @@ extern settings_t settings;
 uint16_t sensBuff[8] = {0};
 uint8_t sensState = 255; // битовое поле
 
-uint32_t freqSens = 72000000u/30000u; 
+uint32_t freqSens = HAL_RCC_GetHCLKFreq()/30000u; 
 uint32_t pwmSens;
 
 uint16_t adc_buffer[1024] = {0};
@@ -74,7 +74,7 @@ osSemaphoreId ADC_endHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-   
+//extern "C"   
 /* USER CODE END FunctionPrototypes */
 
 void mainTask(void const * argument);
@@ -167,8 +167,8 @@ HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
   
       osSemaphoreWait(ADC_endHandle, osWaitForever);
       Sensor1.Filter_SMA(adc_buffer[0]);
-      Sensor2.Filter_SMA(adc_buffer[1]);
-      Sensor3.Filter_SMA(adc_buffer[2]);
+      //Sensor2.Filter_SMA(adc_buffer[1]);
+      //Sensor3.Filter_SMA(adc_buffer[2]);
       //printf("CH1: %d\r\n",Sensor1.Get_Result());
       //printf("CH2: %d\r\n",Sensor2.Get_Result());
       //printf("CH3: %d\r\n",Sensor3.Get_Result());
@@ -176,6 +176,7 @@ HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
       if(call){
          call = 0;
          Sensor1.Call(&adc_buffer[0]);
+         Flash_Write(settings, StartSettingsAddres);
       }
       if(Sensor1.detectPoll()){
          HAL_GPIO_WritePin(R_GPIO_Port, R_Pin, GPIO_PIN_RESET);
@@ -254,9 +255,9 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 1: 
             {	
-//              uint16_t temp = Sensor2.Get_Result();
-//              *(pucRegBuffer) = (temp & 0xff00)>>8;
-//              *(pucRegBuffer++) = temp & 0x00ff;
+              uint16_t temp = Sensor1.Get_Result();
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer++) = temp & 0x00ff;
                break;
             }
            case 2: 
@@ -283,7 +284,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 6: // 
             {	
-               
+               *(pucRegBuffer+1) = Sensor1.timOut;
                break;
             }
            case 7: // 
@@ -357,11 +358,16 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 6: // 
             {	
-               
+               Sensor1.timOut = *(pucRegBuffer+1);
                break;
             }
            case 7: // 
             {	
+              
+              if((*(pucRegBuffer+1)) == 1)
+                {
+                  call = 1;
+                }
                break;
             }
            case 8: 
@@ -377,7 +383,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 10: 
             {	
-               settings.SlaveAddress = *(pucRegBuffer++);
+               settings.SlaveAddress = *(pucRegBuffer+1);
                break;
             }
            case 0x0F: 

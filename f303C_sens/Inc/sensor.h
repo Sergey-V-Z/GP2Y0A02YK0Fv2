@@ -20,6 +20,7 @@ class sensor: public filter{
    uint16_t getOffsetMin();
    uint16_t getOffsetMax();
    bool detectPoll();
+   uint16_t Get_Result();
    bool getdetect();
    void Call(uint16_t *data); // калибрует датчик, принимает указатель на переменную в которую поступаю свежие данные
    

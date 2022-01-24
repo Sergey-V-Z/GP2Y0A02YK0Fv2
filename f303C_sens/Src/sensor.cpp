@@ -47,6 +47,9 @@ bool sensor :: getdetect(){
    return detect;
 }
 
+uint16_t sensor :: Get_Result(){
+   return Result;
+}
 void sensor :: setOffsetMin(uint16_t offset){
    offsetMin = offset;
 }

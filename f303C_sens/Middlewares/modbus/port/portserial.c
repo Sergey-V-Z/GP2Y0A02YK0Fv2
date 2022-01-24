@@ -67,7 +67,7 @@ xMBPortSerialInit( UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBParity e
      * @note MODBUS_SLAVE_RT_CONTROL_PIN_INDEX need be defined by user
      */
     /* set serial configure parameter */
-    serial->Instance = USART2;
+    serial->Instance = USART1;
     serial->Init.BaudRate = ulBaudRate;
     serial->Init.StopBits = UART_STOPBITS_1;
   

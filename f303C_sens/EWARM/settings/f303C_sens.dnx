@@ -12,7 +12,7 @@
         <ByteLimit>50</ByteLimit>
     </Stack>
     <StLinkDriver>
-        <stlinkserialNo>42510187</stlinkserialNo>
+        <stlinkserialNo>434B4E00</stlinkserialNo>
         <stlinkfoundProbes />
         <stlinkResetStyle>0</stlinkResetStyle>
         <stlinkResetStrategy>2</stlinkResetStrategy>
@@ -20,7 +20,7 @@
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>
     </StLinkDriver>
     <DebugChecksum>
-        <Checksum>4139513781</Checksum>
+        <Checksum>1560165212</Checksum>
     </DebugChecksum>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -40,11 +40,11 @@
     </CallStack>
     <SWOTraceHWSettings>
         <OverrideDefaultClocks>0</OverrideDefaultClocks>
-        <CpuClock>72000000</CpuClock>
+        <CpuClock>70000000</CpuClock>
         <ClockAutoDetect>0</ClockAutoDetect>
         <ClockWanted>2000000</ClockWanted>
         <JtagSpeed>2000000</JtagSpeed>
-        <Prescaler>36</Prescaler>
+        <Prescaler>35</Prescaler>
         <TimeStampPrescIndex>0</TimeStampPrescIndex>
         <TimeStampPrescData>0</TimeStampPrescData>
         <PcSampCYCTAP>1</PcSampCYCTAP>
