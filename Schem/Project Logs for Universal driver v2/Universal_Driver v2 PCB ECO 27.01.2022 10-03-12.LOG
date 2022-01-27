@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=GND_ISO Pin=D1-4
+Removed Pin From Net: NetName=+5v_ISO Pin=D1-6
+Change Component Comment : Designator=R10 Old Comment=3.9k New Comment=1.5k
+Change Component Comment : Designator=R11 Old Comment=3.9k New Comment=1.5k
+Change Component Comment : Designator=R13 Old Comment=3.9k New Comment=1.5k
+Change Component Comment : Designator=R2 Old Comment=10 New Comment=0
+Change Component Comment : Designator=R3 Old Comment=10 New Comment=0
+Change Component Comment : Designator=R7 Old Comment=10 New Comment=0
+Change Component Comment : Designator=R9 Old Comment=10 New Comment=0
+Change Component Comment : Designator=Q1 Old Comment=12MHz New Comment=10MHz
