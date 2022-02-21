@@ -1,6 +1,6 @@
 #include "main.h"
 /* Choose filter order */
-#define FILTER_SMA_ORDER 12
+#define FILTER_SMA_ORDER 100
 
 //******************
 // CLASS: filter

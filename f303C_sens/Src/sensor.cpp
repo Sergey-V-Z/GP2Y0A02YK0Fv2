@@ -58,6 +58,10 @@ void sensor :: setOffsetMax(uint16_t offset){
    offsetMax = offset;
 }
 
+void sensor :: setTimeCall(uint32_t time){
+   timeCall = time;
+}
+
 uint16_t sensor :: getOffsetMin(){
    return offsetMin;
 }

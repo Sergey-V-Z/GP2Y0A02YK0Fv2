@@ -17,6 +17,7 @@ class sensor: public filter{
    ~sensor();
    void setOffsetMin(uint16_t offset);
    void setOffsetMax(uint16_t offset);
+   void setTimeCall(uint32_t time);
    uint16_t getOffsetMin();
    uint16_t getOffsetMax();
    bool detectPoll();

@@ -102,12 +102,13 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   Flash_Read(&settings, StartSettingsAddres);
-  if((settings.BaudRate == 0) | (settings.BaudRate == 0xFFFFFFFF))
+  if((settings.BaudRate == 0) | (settings.BaudRate == 0xFFFFFFFF) | (settings.timeCall == 0) | (settings.timeCall == 0xFFFFFFFF))
     {
       settings.BaudRate = 115200;
       settings.SlaveAddress = 0x02;
       settings.offsetMax = 0;
       settings.offsetMin = 0;
+      settings.timeCall = 3000;
       Flash_Write(settings, StartSettingsAddres);
     } 
   /* USER CODE END 2 */

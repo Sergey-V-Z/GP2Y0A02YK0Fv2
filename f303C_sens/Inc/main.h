@@ -52,6 +52,7 @@ typedef struct
    uint8_t  SlaveAddress;
    uint16_t offsetMin;
    uint16_t offsetMax;
+   uint32_t timeCall;
    
 }settings_t;
 

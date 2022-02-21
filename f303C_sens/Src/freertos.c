@@ -156,6 +156,7 @@ void mainTask(void const * argument)
   /* USER CODE BEGIN mainTask */
 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
    HAL_TIM_Base_Start_IT(&htim3); 
+   Sensor1.setTimeCall(settings.timeCall);
 
    HAL_GPIO_WritePin(R_GPIO_Port, R_Pin, GPIO_PIN_SET);
    HAL_GPIO_WritePin(G_GPIO_Port, G_Pin, GPIO_PIN_SET);
@@ -175,8 +176,10 @@ HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
       
       if(call){
          call = 0;
+         HAL_GPIO_WritePin(G_GPIO_Port, G_Pin, GPIO_PIN_SET);
          Sensor1.Call(&adc_buffer[0]);
-         Flash_Write(settings, StartSettingsAddres);
+         //Flash_Write(settings, StartSettingsAddres);
+         HAL_GPIO_WritePin(G_GPIO_Port, G_Pin, GPIO_PIN_RESET);
       }
       if(Sensor1.detectPoll()){
          HAL_GPIO_WritePin(R_GPIO_Port, R_Pin, GPIO_PIN_RESET);
@@ -354,6 +357,10 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 5: // 
             {	
+              uint32_t temp = 0;
+              temp = temp |(*(pucRegBuffer) << 8);
+              temp = temp | *(pucRegBuffer+1);
+              Sensor1.setTimeCall(temp);
                break;
             }
            case 6: // 
