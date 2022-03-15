@@ -894,7 +894,7 @@
                     <item>settings</item>
                     <item>USART1</item>
                     <item>serial</item>
-                    <item></item>
+                    <item />
                 </expressions>
                 <col-names>
                     <item>Expression</item>

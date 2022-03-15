@@ -18,6 +18,7 @@ class filter{
    ~filter();
    void Filter_SMA(uint16_t For_Filtered);
    uint16_t Get_Result();
+   uint16_t Depth = 10;
   private:
    uint16_t Filter_Buffer[FILTER_SMA_ORDER] = {0,};
    uint16_t Result = 0;

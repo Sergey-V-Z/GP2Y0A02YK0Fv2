@@ -3,18 +3,18 @@
 void filter :: Filter_SMA(uint16_t For_Filtered)
 {
    /* Load new value */
-   Filter_Buffer[FILTER_SMA_ORDER - 1] = For_Filtered;
+   Filter_Buffer[Depth - 1] = For_Filtered;
    /* For output value */
    uint32_t Output = 0;
    /* Sum */
-   for(uint8_t i = 0; i < FILTER_SMA_ORDER; i++)
+   for(uint8_t i = 0; i < Depth; i++)
    {
       Output += Filter_Buffer[i];
    }
    /* Divide */
-   Output /= FILTER_SMA_ORDER;
+   Output /= Depth;
    /* Left Shift */
-   for(uint8_t i = 0; i < FILTER_SMA_ORDER; i++)
+   for(uint8_t i = 0; i < Depth; i++)
       Filter_Buffer[i] = Filter_Buffer[i+1];
    /* Return filtered value */
    Result = (uint16_t) Output;

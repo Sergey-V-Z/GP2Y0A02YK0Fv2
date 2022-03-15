@@ -277,7 +277,9 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 4: // RPM
             {	
-                          
+              uint16_t temp = Sensor1.Depth;
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer++) = temp & 0x00ff;                          
                break;
             }
            case 5: // 
@@ -352,7 +354,11 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 4: // 
             {	
-               
+              uint32_t temp = 0;
+              temp = temp |(*(pucRegBuffer) << 8);
+              temp = temp | *(pucRegBuffer+1);
+              if(temp > 100){temp = 100;}
+              Sensor1.Depth = temp;
                break;
             }
            case 5: // 
