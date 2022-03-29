@@ -67,6 +67,7 @@ sensor Sensor1;
 sensor Sensor2;
 sensor Sensor3;
 uint16_t call = 0;
+bool to_measure = false;
 /* USER CODE END Variables */
 osThreadId MainTaskHandle;
 osThreadId ModbusHandle;
@@ -74,7 +75,7 @@ osSemaphoreId ADC_endHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-//extern "C"   
+// extern "C"   
 /* USER CODE END FunctionPrototypes */
 
 void mainTask(void const * argument);
@@ -154,7 +155,7 @@ void MX_FREERTOS_Init(void) {
 void mainTask(void const * argument)
 {
   /* USER CODE BEGIN mainTask */
-HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
+   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
    HAL_TIM_Base_Start_IT(&htim3); 
    Sensor1.setTimeCall(settings.timeCall);
 
@@ -166,8 +167,9 @@ HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
    for(;;)
    {
   
-      osSemaphoreWait(ADC_endHandle, osWaitForever);
-      Sensor1.Filter_SMA(adc_buffer[0]);
+      //osSemaphoreWait(ADC_endHandle, osWaitForever);
+      //Sensor1.Filter_SMA(adc_buffer[0]);
+     
       //Sensor2.Filter_SMA(adc_buffer[1]);
       //Sensor3.Filter_SMA(adc_buffer[2]);
       //printf("CH1: %d\r\n",Sensor1.Get_Result());
@@ -175,11 +177,14 @@ HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc_buffer, 1);
       //printf("CH3: %d\r\n",Sensor3.Get_Result());
       
       if(call){
-         call = 0;
+         call = 0; 
          HAL_GPIO_WritePin(G_GPIO_Port, G_Pin, GPIO_PIN_RESET);
+         HAL_GPIO_WritePin(s_enable_GPIO_Port, s_enable_Pin, GPIO_PIN_SET); // enable sensor
          Sensor1.Call(&adc_buffer[0]);
          //Flash_Write(settings, StartSettingsAddres);
+         HAL_GPIO_WritePin(s_enable_GPIO_Port, s_enable_Pin, GPIO_PIN_RESET);// disable sensor
          HAL_GPIO_WritePin(G_GPIO_Port, G_Pin, GPIO_PIN_SET);
+         to_measure = false; 
       }
       if(Sensor1.detectPoll()){
          HAL_GPIO_WritePin(R_GPIO_Port, R_Pin, GPIO_PIN_RESET);
@@ -219,7 +224,10 @@ void modbus(void const * argument)
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
   /* This is called after the conversion is completed */
 
-   osSemaphoreRelease(ADC_endHandle);
+  if(to_measure){
+   //osSemaphoreRelease(ADC_endHandle);
+   Sensor1.Filter_SMA(adc_buffer[0]);
+  }
    
 }
 /*description https://www.freemodbus.org/api/group__modbus__registers.html*/
@@ -260,14 +268,16 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             {	
               uint16_t temp = Sensor1.Get_Result();
               *(pucRegBuffer) = (temp & 0xff00)>>8;
-              *(pucRegBuffer++) = temp & 0x00ff;
+              *(pucRegBuffer+1) = temp & 0x00ff;
                break;
             }
            case 2: 
             {	
-//              uint16_t temp = Sensor3.Get_Result();
-//              *(pucRegBuffer) = (temp & 0xff00)>>8;
-//              *(pucRegBuffer++) = temp & 0x00ff;
+              uint16_t temp = (uint16_t)Sensor1.getdetect();
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer+1) = temp & 0x00ff;
+              to_measure = false;
+              HAL_GPIO_WritePin(s_enable_GPIO_Port, s_enable_Pin, GPIO_PIN_RESET);// disable sensor
                break;
             }
            case 3: //Status Dir
@@ -277,9 +287,9 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 4: // RPM
             {	
-              uint16_t temp = Sensor1.Depth;
+              uint16_t temp = Sensor1.Depth; // глубина фильтра
               *(pucRegBuffer) = (temp & 0xff00)>>8;
-              *(pucRegBuffer++) = temp & 0x00ff;                          
+              *(pucRegBuffer+1) = temp & 0x00ff;                          
                break;
             }
            case 5: // 
@@ -289,7 +299,9 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 6: // 
             {	
-               *(pucRegBuffer+1) = Sensor1.timOut;
+              uint16_t temp = Sensor1.timOut;
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer+1) = temp & 0x00ff;
                break;
             }
            case 7: // 
@@ -305,12 +317,16 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 9: 
             {	
-               *(pucRegBuffer++) = settings.BaudRate;
+              uint16_t temp = settings.BaudRate;
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer+1) = temp & 0x00ff;
                break;
             }
            case 10: 
-            {	
-               *(pucRegBuffer++) = settings.SlaveAddress;
+            {	 
+              uint16_t temp = settings.SlaveAddress;
+              *(pucRegBuffer) = (temp & 0xff00)>>8;
+              *(pucRegBuffer+1) = temp & 0x00ff;               
                break;
             }
            case 11: 
@@ -334,17 +350,19 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
          {
            case 0: //  Stop/Start
             {	
-               
+
                break;
             }
            case 1: // Dir
             {	
                
+               
                break;
             }
            case 2: 
-            {	
-               
+            {
+               HAL_GPIO_WritePin(s_enable_GPIO_Port, s_enable_Pin, GPIO_PIN_SET); // enable sensor
+               to_measure = true;               
                break;
             }
            case 3: 
@@ -372,7 +390,10 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
             }
            case 6: // 
             {	
-               Sensor1.timOut = *(pucRegBuffer+1);
+              uint32_t temp = 0;
+              temp = temp |(*(pucRegBuffer) << 8);
+              temp = temp | *(pucRegBuffer+1);
+              Sensor1.timOut = temp;
                break;
             }
            case 7: // 
@@ -380,6 +401,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
               
               if((*(pucRegBuffer+1)) == 1)
                 {
+                  to_measure = true;
                   call = 1;
                 }
                break;
@@ -438,4 +460,3 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
     
 /* USER CODE END Application */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
